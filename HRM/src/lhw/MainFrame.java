@@ -1,4 +1,4 @@
-package main;
+package lhw;
 
 import java.awt.Button;
 import java.awt.FlowLayout;

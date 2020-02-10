@@ -1,4 +1,4 @@
-package main;
+package lhw;
 
 public class MainEx {
 
