@@ -169,7 +169,7 @@ public class MainFrame extends JFrame implements ActionListener{
 	}
 	
 	public void loginProc() {
-		
+		LoginDialog.setVisible(true);
 	}
 	
 	public void makeMenuBar() {
