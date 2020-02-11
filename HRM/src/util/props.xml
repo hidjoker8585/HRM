@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="EUC-KR"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<entry key="userName">lhw</entry>
+	<entry key="userPw">hwhw</entry>
+	<entry key="serverIp">192.168.109.1</entry>
+</properties>
