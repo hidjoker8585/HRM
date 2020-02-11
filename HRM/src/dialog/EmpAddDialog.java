@@ -6,12 +6,13 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 
 /**
- * @brief
- * @author 
- * @version 
- * @see 
+ * @brief 사원 등록 다이얼로그
+ * @author 박영훈
+ * @version v1.00 2020.02.11
+ * @see none
  */
 public class EmpAddDialog extends JDialog{
+	
 	public EmpAddDialog(JFrame f, String msg, boolean modal) {
 		// TODO Auto-generated constructor stub
 		super(f,msg,modal);

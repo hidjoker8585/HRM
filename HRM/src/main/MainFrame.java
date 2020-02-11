@@ -58,7 +58,7 @@ public class MainFrame extends JFrame implements ActionListener{
 	 * 
 	 */
 	//권한
-	private boolean master = false; //(관리자 : true)
+	private boolean master = true; //(관리자 : true)
 	
 	//컨테이너
 	private Container root;
