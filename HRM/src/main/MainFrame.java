@@ -2,6 +2,7 @@ package main;
 
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -130,14 +131,17 @@ public class MainFrame extends JFrame implements ActionListener{
 	
 	public void initFrame() {
 
+		setLayout(new GridLayout(1,1));
 		setTitle("인사관리 프로그램");
-
+		
 		setSize(new Dimension(1280,768)); //프레임 크기
 		setLocationRelativeTo(null); //가운데 위치
 		
-		root = getContentPane();		
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setVisible(true);
+		
+		root = getContentPane();
+		root.setLayout(new GridLayout(1,1));				
 
 		//다이얼로그 생성
 		aboutDialog = new AboutDialog(this,"대하여",true);
