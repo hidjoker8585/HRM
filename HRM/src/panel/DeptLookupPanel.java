@@ -35,6 +35,13 @@ public class DeptLookupPanel extends JPanel{
 	private JScrollPane scroll_leader;
 	private TableColumnModel colModel_leader;
 	
+	private DefaultTableModel tbModel_deptList;
+	private JScrollPane scroll_dept;
+	private TableColumnModel colModel_dept;	
+	
+	private DefaultTableModel tbModel_empList;
+	private JScrollPane scroll_emp;
+	private TableColumnModel colModel_emp;	
 	
 	public DeptLookupPanel() {
 		// TODO Auto-generated constructor stub
@@ -50,7 +57,7 @@ public class DeptLookupPanel extends JPanel{
 		setLayout(null);
 
 		pane_main = new JPanel();
-		pane_main.setBounds(0,0,600,600);
+		pane_main.setBounds(0,0,1280,768);
 		pane_main.setLayout(null);
 		
 		pane_sub_leader = new JPanel();
@@ -62,16 +69,30 @@ public class DeptLookupPanel extends JPanel{
 		colNames_leader.addElement("이름");
 		colNames_leader.addElement("사번");
 		colNames_leader.addElement("상세보기");
+		Vector<Object> colNames_dept = new Vector<>();
+		colNames_dept.addElement("부서명");
+
+		Vector<Object> colNames_emp = new Vector<>();
+		colNames_emp.addElement("직급");
+		colNames_emp.addElement("이름");
+		colNames_emp.addElement("사번");
+		colNames_emp.addElement("상세보기");
+		
+
 		
 		//테이블 모델 설정
-		tbModel_leader = new DefaultTableModel(colNames_leader, 0);		
-		
+		tbModel_leader = new DefaultTableModel(colNames_leader, 1);		
+		tbModel_deptList = new DefaultTableModel(colNames_dept, 5);
+		tbModel_empList = new DefaultTableModel(colNames_emp, 8);		
+
+
 		//더미값 넣기
 		Vector<Object> row_leader = new Vector<>();
 		row_leader.addElement("팀장");
 		row_leader.addElement("홍길동");
 		row_leader.addElement("10002");
 		row_leader.addElement("상세보기");
+		
 		tbModel_leader.addRow(row_leader);
 		
 		//테이블 설정
@@ -80,7 +101,28 @@ public class DeptLookupPanel extends JPanel{
 		table_leader.setRowSelectionAllowed(false);
 		table_leader.setCellSelectionEnabled(true);
 		
-		table_leader.setRowHeight(40);
+		table_deptList = new JTable(tbModel_deptList);
+		table_deptList.setFillsViewportHeight(false);
+		table_deptList.setRowSelectionAllowed(false);
+		table_deptList.setCellSelectionEnabled(true);
+		
+		table_empList = new JTable(tbModel_empList);
+		table_empList.setFillsViewportHeight(false);
+		table_empList.setRowSelectionAllowed(false);
+		table_empList.setCellSelectionEnabled(true);
+		
+		table_leader.setRowHeight(30);
+		colModel_leader = table_leader.getColumnModel();
+		colModel_leader.getColumn(0).setPreferredWidth(100);
+		colModel_leader.getColumn(1).setPreferredWidth(100);
+		colModel_leader.getColumn(2).setPreferredWidth(100);
+		colModel_leader.getColumn(3).setPreferredWidth(50);
+		
+		table_leader.setRowHeight(30);
+		colModel_leader = table_leader.getColumnModel();
+		colModel_leader.getColumn(0).setPreferredWidth(150);
+		
+		table_leader.setRowHeight(30);
 		colModel_leader = table_leader.getColumnModel();
 		colModel_leader.getColumn(0).setPreferredWidth(100);
 		colModel_leader.getColumn(1).setPreferredWidth(100);
@@ -89,9 +131,17 @@ public class DeptLookupPanel extends JPanel{
 		
 		//스크롤 설정
 		scroll_leader = new JScrollPane(table_leader);
-		scroll_leader.setBounds(0,0,500,100);
+		scroll_leader.setBounds(600,30,600,55);
+		
+		scroll_dept = new JScrollPane(table_deptList);
+		scroll_dept.setBounds(50,100,150,300);
 
+		scroll_emp = new JScrollPane(table_empList);
+		scroll_emp.setBounds(600,150,600,400);
+		
 		pane_main.add(scroll_leader);
+		pane_main.add(scroll_dept);
+		pane_main.add(scroll_emp);
 
 //		pane_main.setLayout(null);
 

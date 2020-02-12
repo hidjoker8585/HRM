@@ -24,7 +24,7 @@ public class AboutDialog extends JDialog{
 		setLocationRelativeTo(null); //가운데 위치
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE); //닫기
 
-
+		
 	}
 
 }
