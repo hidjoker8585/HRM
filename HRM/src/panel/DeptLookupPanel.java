@@ -10,4 +10,5 @@ import javax.swing.JPanel;
  */
 public class DeptLookupPanel extends JPanel{
 
+	
 }
