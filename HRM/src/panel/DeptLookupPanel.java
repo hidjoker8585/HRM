@@ -1,23 +1,20 @@
 package panel;
 
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Vector;
 
-import javax.swing.DefaultCellEditor;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
+
+import util.TableEditor;
+import util.TableRenderer;
 
 
 /**
@@ -83,8 +80,6 @@ public class DeptLookupPanel extends JPanel{
 		pane_main.setBounds(0,0,1280,768);
 		pane_main.setLayout(null);
 	
-//		pane_main.setLayout(null);
-
 		
 	}
 	
@@ -94,15 +89,15 @@ public class DeptLookupPanel extends JPanel{
 		colNames.addElement("부서명");
 		
 		// 로우값 넣기(테스트 데이터)
-		Vector<String> row1;
+		Vector<Object> row1;
 		row1 = new Vector<>();
-		row1.addElement("인사팀");
-		Vector<String> row2;
+		row1.addElement(new Boolean(true));
+		Vector<Object> row2;
 		row2 = new Vector<>();
-		row2.addElement("개발팀");
-		Vector<String> row3;
+		row2.addElement(new Boolean(false));
+		Vector<Object> row3;
 		row3 = new Vector<>();
-		row3.addElement("영업팀");
+		row3.addElement(new Boolean(true));
 		
 		//테이블 모델 설정
 		tbModel_deptList = new DefaultTableModel(colNames, 0);
@@ -115,6 +110,10 @@ public class DeptLookupPanel extends JPanel{
 		table_deptList.setFillsViewportHeight(false);
 		table_deptList.setRowSelectionAllowed(false);
 		table_deptList.setCellSelectionEnabled(true);
+		
+		// 셀 에디터,렌더러 설정
+		table_deptList.getColumn("부서명").setCellEditor(new TableEditor("check"));
+		table_deptList.getColumn("부서명").setCellRenderer(new TableRenderer("check"));
 		
 		table_deptList.setRowHeight(30);
 		colModel_dept = table_deptList.getColumnModel();
@@ -138,12 +137,12 @@ public class DeptLookupPanel extends JPanel{
 		colNames.addElement("상세보기");
 		
 		// 로우값 넣기(테스트 데이터)
-		Vector<String> row;
+		Vector<Object> row;
 		row = new Vector<>();
 		row.addElement("팀장");
 		row.addElement("김영희");
 		row.addElement("10004");
-		row.addElement("보기");
+		row.addElement(10004);
 		
 		// 테이블 모델 설정
 		tbModel_leader = new DefaultTableModel(colNames,0);
@@ -155,9 +154,9 @@ public class DeptLookupPanel extends JPanel{
 		table_leader.setRowSelectionAllowed(false);
 		table_leader.setCellSelectionEnabled(false);
 		
-		// 셀 에디터 설정
-		table_leader.getColumn("상세보기").setCellEditor(new ButtonEditor(new JCheckBox()));
-		table_leader.getColumn("상세보기").setCellRenderer(new ButtonRenderer());
+		// 셀 에디터,렌더러 설정
+		table_leader.getColumn("상세보기").setCellEditor(new TableEditor("button"));
+		table_leader.getColumn("상세보기").setCellRenderer(new TableRenderer("button"));
 		
 		// 셀 사이즈 설정
 		table_leader.setRowHeight(30);
@@ -190,25 +189,25 @@ public class DeptLookupPanel extends JPanel{
 		row1.addElement("사원");
 		row1.addElement("홍길동");
 		row1.addElement("10002");
-		row1.addElement("보기");		
+		row1.addElement(10002);		
 		Vector<Object> row2;
 		row2 = new Vector<>();
 		row2.addElement("사원");
 		row2.addElement("김동수");
 		row2.addElement("10003");
-		row2.addElement("보기");	
+		row2.addElement(10003);	
 		Vector<Object> row3;
 		row3 = new Vector<>();
 		row3.addElement("사원");
 		row3.addElement("대나무");
 		row3.addElement("10005");
-		row3.addElement("보기");	
+		row3.addElement(10005);	
 		Vector<Object> row4;
 		row4 = new Vector<>();
 		row4.addElement("사원");
 		row4.addElement("줄리앙");
 		row4.addElement("10011");
-		row4.addElement("보기");
+		row4.addElement(10011);
 		
 		// 테이블 모델 설정
 		tbModel_empList = new DefaultTableModel(colNames,0);
@@ -222,9 +221,9 @@ public class DeptLookupPanel extends JPanel{
 		table_empList.setFillsViewportHeight(false);
 		table_empList.setRowSelectionAllowed(true);
 		
-		// 셀 에디터 설정
-		table_empList.getColumn("상세보기").setCellEditor(new ButtonEditor(new JCheckBox()));
-		table_empList.getColumn("상세보기").setCellRenderer(new ButtonRenderer());
+		// 셀 에디터,렌더러 설정
+		table_empList.getColumn("상세보기").setCellEditor(new TableEditor("button"));
+		table_empList.getColumn("상세보기").setCellRenderer(new TableRenderer("button"));
 
 		table_empList.setRowHeight(30);
 		colModel_emp = table_empList.getColumnModel();
@@ -246,88 +245,7 @@ public class DeptLookupPanel extends JPanel{
 		
 	}
 	
-	private class ButtonEditor extends DefaultCellEditor {
 
-		private JButton btn;
-		private String label;
-		private boolean isPushed;
-		
-		public ButtonEditor(JCheckBox checkBox) {
-			// TODO Auto-generated constructor stub
-			super(checkBox);
-			btn = new JButton();
-			btn.setOpaque(true);
-			btn.addActionListener(new ActionListener() {				
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					// TODO Auto-generated method stub
-					fireEditingStopped();
-				}
-			});
-		}
-		
-
-		
-		@Override
-		public Object getCellEditorValue() {
-			// TODO Auto-generated method stub
-			if(isPushed) {
-				JOptionPane.showMessageDialog(btn,"버튼 눌림!");
-			}
-			isPushed = false;
-			return label;
-		}
-
-
-		@Override
-		public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row,
-				int column) {
-			// TODO Auto-generated method stub
-			if(isSelected) {
-				btn.setForeground(table.getSelectionForeground());
-				btn.setBackground(table.getSelectionBackground());
-			}else {
-				btn.setForeground(table.getForeground());
-				btn.setBackground(table.getBackground());
-			}
-			if(value==null||value.equals("")) {
-				return null;
-			}else {
-				label = value.toString();
-				btn.setText(label);
-				isPushed = true;
-				return btn;
-			}
-		}
-
-	}
 	
-	private class ButtonRenderer extends JButton implements TableCellRenderer{
-		
-		public ButtonRenderer() {
-			// TODO Auto-generated constructor stub
-			setOpaque(true);
-		}
 
-		@Override
-		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-				int row, int column) {
-			// TODO Auto-generated method stub
-			if(isSelected) {
-				setForeground(table.getSelectionForeground());
-				setBackground(table.getSelectionBackground());
-			}else {
-				setForeground(table.getForeground());
-				setBackground(UIManager.getColor("Button.background"));
-			}
-			if(value==null||value.equals("")) {
-				return null;
-			}else {
-				setText(value.toString());
-				return this;
-			}
-		}
-
-
-	}
 }
