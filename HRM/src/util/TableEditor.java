@@ -9,17 +9,19 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
 /**
- * @brief 커스텀 테이블셀에디터 클래스입니다
+ * @brief 커스텀 테이블 셀 에디터 클래스입니다
  *     	   버튼,콤보박스,체크박스 3종류를 지원합니다
+ *       생성자 매개변수로 다음 값을 넘겨 주시면 사용할 수 있습니다
+ *       버튼은 "button", 콤보박스는 String[] 옵션배열, 체크박스는 "check"
  * @author 이현우
- * @version v 1.00 (2020.02.14)
- * @see 생성자 매개변수로 다음 설정 값을 주시면 사용할 수 있습니다
- *      버튼은 "button", 콤보박스는 "combo", 체크박스는 "check"
- *      현재는 버튼만 구현중..
+ * @version v 1.01 (2020.02.15)
+ * @see 
+ *      
  */
 public class TableEditor extends AbstractCellEditor implements TableCellEditor, ActionListener{
 
@@ -29,7 +31,6 @@ public class TableEditor extends AbstractCellEditor implements TableCellEditor, 
 	private JCheckBox check;
 	private JButton button;
 	
-	private boolean chk;
 	private int empNo;
 	
 	
@@ -40,13 +41,20 @@ public class TableEditor extends AbstractCellEditor implements TableCellEditor, 
 			button = new JButton();
 			button.setOpaque(true);
 			button.addActionListener(this);
-		}else if(type.equals("combo")) {
-			combo = new JComboBox<String>();
-		}else if(type.equals("chk")) {
+		}else if(type.equals("check")) {
 			check = new JCheckBox();
-			check.setSelected(false);
+			check.setHorizontalAlignment(JLabel.CENTER);
 			check.addActionListener(this);
 		}
+	}
+	
+	public TableEditor(String[] strArr){
+		// TODO Auto-generated constructor stub
+		type = "combo";
+		combo = new JComboBox<String>(strArr);
+		combo.setOpaque(true);	
+		combo.addActionListener(this);
+		((JLabel)combo.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
 	}
 	
 	@Override
@@ -56,7 +64,8 @@ public class TableEditor extends AbstractCellEditor implements TableCellEditor, 
 			JOptionPane.showMessageDialog(button,"버튼 눌림! "+empNo);
 			return empNo;
 		}else if(type.equals("combo")) {
-			return null;
+			JOptionPane.showMessageDialog(combo, "콤보선택"+combo.getSelectedItem());
+			return (String)combo.getSelectedItem();
 		}else if(type.equals("check")) {
 			JOptionPane.showMessageDialog(check,"체크확인 "+check.isSelected());
 			return check.isSelected();
@@ -73,20 +82,15 @@ public class TableEditor extends AbstractCellEditor implements TableCellEditor, 
 			return null;
 		} else if(type.equals("button")){
 			// TODO Auto-generated method stub
-			if (isSelected) {
-				button.setBorder(BorderFactory.createMatteBorder(3, 10, 3, 10, table.getSelectionBackground()));
-			} else {
-				button.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 0, table.getBackground()));
-			}
 			empNo = (int) value;
 			button.setText("보기");
 			return button;
+		}else if(type.equals("combo")) {
+			combo.setSelectedItem((String)value);
+			return combo;
 		}else if(type.equals("check")) {
-			if(isSelected) {
-
-			}else {
-				
-			}
+			check.setBackground(table.getSelectionBackground());
+			check.setSelected((boolean)value);
 			return check;
 		}else {
 			return null;
