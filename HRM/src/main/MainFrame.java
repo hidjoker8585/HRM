@@ -175,7 +175,6 @@ public class MainFrame extends JFrame implements ActionListener{
 	}
 	
 	public void loginProc() {
-		//LoginDialog.setVisible(true);
 	}
 	
 	public void makeMenuBar() {
@@ -283,7 +282,7 @@ public class MainFrame extends JFrame implements ActionListener{
 		// TODO Auto-generated method stub
 		
 		if(e.getSource()==miLogout) {
-			JOptionPane.showMessageDialog(this, "ÀÛ¾÷Áß");
+			LoginDialog.setVisible(true);
 		}else if(e.getSource()==miSch) {
 			root.removeAll();
 			root.add(schManagePane);
