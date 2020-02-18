@@ -470,6 +470,7 @@ public class DeptLookupPanel extends JPanel implements ListSelectionListener{
 			}
 		}
 	}
+	
 }
 
 
