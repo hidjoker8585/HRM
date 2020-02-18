@@ -4,6 +4,11 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -13,13 +18,16 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
-import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
 
+import dao.DaoImpl;
+import dto.Dept;
+import dto.Emp;
 import util.TableEditor;
 import util.TableModel;
 import util.TableRenderer;
@@ -28,21 +36,22 @@ import util.TableRenderer;
 /**
  * @brief 부서조회
  * @author 이현우
- * @version v 1.03 (2020.02.16)
+ * @version v 1.04 (2020.02.18)
  * @see DB연결 남음..
  * 
  */
-public class DeptLookupPanel extends JPanel{
+public class DeptLookupPanel extends JPanel implements ListSelectionListener{
 
 	//설정 상수 값
 	private static final int TABLE_HEADER_HEIGHT = 40;
-	private static final Color TABLE_HEADER_BACKGROUND = new Color(200, 200, 200);
-	private static final Font TABLE_HEADER_FONT = new Font("고딕",Font.BOLD,14); 
-
 	private static final int TABLE_CELL_HEIGHT = 40;
-	private static final Font TABLE_CELL_FONT = new Font("고딕",Font.PLAIN,14);
-	
+
+	private static final Color TABLE_HEADER_BACKGROUND = new Color(200, 200, 200);
+	private static final Color TABLE_CELL_BACKGROUND = new Color(240, 240, 240);
 	private static final Color AREA_INTRODUCTION_BACKGROUND = new Color(220, 220, 220);
+
+	private static final Font TABLE_HEADER_FONT = new Font("고딕",Font.BOLD,14); 
+	private static final Font TABLE_CELL_FONT = new Font("고딕",Font.PLAIN,14);
 	private static final Font LBL_INTRODUCTION_FONT = new Font("고딕",Font.BOLD,18);
 	private static final Font AREA_INTRODUCTION_FONT = new Font("고딕",Font.PLAIN,14);
 	
@@ -103,8 +112,14 @@ public class DeptLookupPanel extends JPanel{
 	private JTableHeader header_leader;
 	private JTableHeader header_emp;
 	
-	
 	private DefaultTableCellRenderer defaultRenderer;
+	
+	//DB
+	private DaoImpl dao;
+	private TreeMap<Dept, ArrayList<Emp>> sourceMap;
+	private ArrayList<Dept> deptList;
+	private HashMap<String,ArrayList<Emp>> empMap;
+	
 	
 	
 	//생성자
@@ -126,6 +141,10 @@ public class DeptLookupPanel extends JPanel{
 		//부서 설명
 		makeDeptIntroduction();
 	
+		//db값 가져오기
+		getData();
+		
+		
 		add(pane_main);
 
 	}
@@ -140,48 +159,23 @@ public class DeptLookupPanel extends JPanel{
 	}
 	
 	public void makeDeptTable() {
-		// 테이블 제목 백터
+		
+		//부서리스트 
 		Vector<Object> colNames = new Vector<>();
 		colNames.addElement("부서명");
-		
-		// 데이터 백터(테스트)
-		Vector<Object> row1;
-		row1 = new Vector<>();
-		row1.addElement("인사팀");
-		Vector<Object> row2;
-		row2 = new Vector<>();
-		row2.addElement("개발1팀");
-		Vector<Object> row3;
-		row3 = new Vector<>();
-		row3.addElement("개발2팀");
-		Vector<Object> row4;
-		row4 = new Vector<>();
-		row4.addElement("총무팀");
-		Vector<Object> row5;
-		row5 = new Vector<>();
-		row5.addElement("홍보팀");
-		Vector<Object> row6;
-		row6 = new Vector<>();
-		row6.addElement("재무팀");
 		
 		//테이블 모델 설정
 		//tbModel_deptList = new TableModel(colNames, 0,0);
 		tbModel_deptList = new TableModel(colNames, 0);
-		
-		//Row 삽입
-		tbModel_deptList.addRow(row1);
-		tbModel_deptList.addRow(row2);
-		tbModel_deptList.addRow(row3);
-		tbModel_deptList.addRow(row4);
-		tbModel_deptList.addRow(row5);
-		tbModel_deptList.addRow(row6);
 
 		//테이블 설정	
 		table_deptList = new JTable(tbModel_deptList);
 		table_deptList.setFillsViewportHeight(false);
 		table_deptList.setRowSelectionAllowed(true);
 		table_deptList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
+		table_deptList.setBackground(TABLE_CELL_BACKGROUND);
+		table_deptList.getSelectionModel().addListSelectionListener(this);
+		
 		// 셀 에디터,렌더러 설정
 		defaultRenderer = new DefaultTableCellRenderer();
 		colModel_dept = table_deptList.getColumnModel();
@@ -221,25 +215,15 @@ public class DeptLookupPanel extends JPanel{
 		colNames.addElement("사번");
 		colNames.addElement("상세보기");
 		
-		// 데이터 백터(테스트)
-		Vector<Object> row;
-		row = new Vector<>();
-		row.addElement("팀장");
-		row.addElement("김영희");
-		row.addElement("10004");
-		row.addElement(10004);
-		
 		// 테이블 모델 설정
 		tbModel_leader = new TableModel(colNames,0,3);
-    	
-    	// Row 삽입
-		tbModel_leader.addRow(row);
 		
 		// 테이블 설정
 		table_leader = new JTable(tbModel_leader);
 		table_leader.setFillsViewportHeight(false);
 		table_leader.setRowSelectionAllowed(false);
 		table_leader.setCellSelectionEnabled(false);
+		table_leader.setBackground(TABLE_CELL_BACKGROUND);
 		
 		// 테이블 폰트 설정
 		header_leader = table_leader.getTableHeader();
@@ -284,47 +268,16 @@ public class DeptLookupPanel extends JPanel{
 		colNames.addElement("사번");
 		colNames.addElement("상세보기");
 		
-		// 데이터 백터(테스트)
-		Vector<Object> row1;
-		row1 = new Vector<>();
-		row1.addElement("사원");
-		row1.addElement("홍길동");
-		row1.addElement("10002");
-		row1.addElement(10002);		
-		Vector<Object> row2;
-		row2 = new Vector<>();
-		row2.addElement("사원");
-		row2.addElement("김동수");
-		row2.addElement("10003");
-		row2.addElement(10003);	
-		Vector<Object> row3;
-		row3 = new Vector<>();
-		row3.addElement("사원");
-		row3.addElement("대나무");
-		row3.addElement("10005");
-		row3.addElement(10005);	
-		Vector<Object> row4;
-		row4 = new Vector<>();
-		row4.addElement("사원");
-		row4.addElement("줄리앙");
-		row4.addElement("10011");
-		row4.addElement(10011);
-		
 		// 테이블 모델 설정
 		//tbModel_empList = new TableModel(colNames,0,2,3);
 		tbModel_empList = new TableModel(colNames,0,3);
 
-    	//Row 삽입
-		tbModel_empList.addRow(row1);
-		tbModel_empList.addRow(row2);
-		tbModel_empList.addRow(row3);
-		tbModel_empList.addRow(row4);
-		
 		// 테이블 설정
 		table_empList = new JTable(tbModel_empList);
 		table_empList.setFillsViewportHeight(false);
 		table_empList.setRowSelectionAllowed(true);
 		table_empList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		table_empList.setBackground(TABLE_CELL_BACKGROUND);
 		
 		// 셀 폰트 설정
 		header_emp = table_empList.getTableHeader();
@@ -363,7 +316,7 @@ public class DeptLookupPanel extends JPanel{
 	}
 	
 	public void makeDeptIntroduction() {
-		
+
 		//패널 설정
 		pane_sub_intro = new JPanel();
 		pane_sub_intro.setLayout(null);
@@ -376,22 +329,13 @@ public class DeptLookupPanel extends JPanel{
 		lbl_intro.setFont(LBL_INTRODUCTION_FONT);
 		
 		//텍스트 에어리어 설정
-		area_intro = new JTextArea(5, 15);
+		area_intro = new JTextArea();
 		area_intro.setEditable(false);
 		area_intro.setBounds(20,50,260,190);
 	    area_intro.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 	    area_intro.setBackground(AREA_INTRODUCTION_BACKGROUND);
 	    area_intro.setLineWrap(true);
 	    area_intro.setFont(AREA_INTRODUCTION_FONT);
-	    
-	    //부서소개 텍스트(테스트 값)
-	    String intro = "\n    인사팀은 직원을 선발하고 배치하며 \n"
-	    		+ "    직원 역량을 개발하고 평가하는 등  \n"
-	    		+ "    인적자원 관리를 주 업무로 하고 있습 \n"
-	    		+ "    니다\n\n"
-	    		+ "    위치 : 본사 3F \n"
-	    		+ "    연락처 : xx-xxxx-xxxx";
-		area_intro.setText(intro);
 	    
 	    pane_sub_intro.add(lbl_intro);
 		pane_sub_intro.add(area_intro);
@@ -400,7 +344,132 @@ public class DeptLookupPanel extends JPanel{
 		
 	}
 	
+	public void getData() {
+		//dao = new DaoImpl();
+		//sourceMap = dao.getAllByDept();
+		// 테스트데이터 넣기
+		
+		// 테스트 데이터
+		sourceMap = new TreeMap<>();
+		Dept dept = new Dept();
+		ArrayList empList = new ArrayList<>();
+	    //부서소개 텍스트(테스트 값)
+	    String intro = "\n    인사팀은 직원을 선발하고 배치하며 \n"
+	    		+ "    직원 역량을 개발하고 평가하는 등  \n"
+	    		+ "    인적자원 관리를 주 업무로 하고 있습 \n"
+	    		+ "    니다\n\n"
+	    		+ "    위치 : 본사 3F \n"
+	    		+ "    연락망 : xx-xxxx-xxxx";
+		dept.setName("인사팀");
+		dept.setLeaderNo(10004);
+		dept.setIntro(intro);
+		Emp emp = new Emp();
+		emp.setDept("인사팀");		
+		emp.setPosition("사원");
+		emp.setName("홍길동");
+		emp.setEmpNo(10002);
+		empList.add(emp);
+		emp = new Emp();
+		emp.setDept("인사팀");		
+		emp.setPosition("팀장");
+		emp.setName("김영희");
+		emp.setEmpNo(10004);
+		empList.add(emp);
+		emp = new Emp();
+		emp.setDept("인사팀");		
+		emp.setPosition("사원");
+		emp.setName("김동수");
+		emp.setEmpNo(10003);
+		empList.add(emp);
+		emp = new Emp();
+		emp.setDept("인사팀");		
+		emp.setPosition("사원");
+		emp.setName("대나무");
+		emp.setEmpNo(10005);
+		empList.add(emp);
+		sourceMap.put(dept, empList);
+		
+	    intro = "\n    개발1팀은 솔루션 개발과 유지보수 \n"
+	    		+ "    업무를 담당하고 있습니다   \n"
+	    		+ "    \n"
+	    		+ "    위치 : 본사 4F \n"
+	    		+ "    연락망 : xx-xxxx-xxxx";
+		empList = new ArrayList<>();
+	    dept = new Dept();
+		emp = new Emp();
+		dept.setName("개발1팀");
+		dept.setLeaderNo(10007);
+		dept.setIntro(intro);
+		emp.setDept("개발1팀");		
+		emp.setPosition("사원");
+		emp.setName("줄리앙");
+		emp.setEmpNo(10011);
+		empList.add(emp);
+		emp = new Emp();
+		emp.setDept("개발1팀");		
+		emp.setPosition("팀장");
+		emp.setName("박혁");
+		emp.setEmpNo(10007);
+		empList.add(emp);
+		sourceMap.put(dept, empList);	
+	    dept = new Dept();
+		//emp = new Emp();
+		dept.setName("홍보팀");
+		dept.setLeaderNo(10007);
+		sourceMap.put(dept, null);
 
+		// 데이터 분배하기
+		deptList = new ArrayList<>();
+		empMap = new HashMap<>();
+		
+		Iterator<Map.Entry<Dept, ArrayList<Emp>>> iter = sourceMap.entrySet().iterator();
+		while ( iter.hasNext()) {
+			Map.Entry<Dept, ArrayList<Emp>> entry = iter.next();
+			Dept row = (Dept)entry.getKey();
+			deptList.add(row);
+			empMap.put(row.getName(), entry.getValue());
+			Vector<Object> name = new Vector<>();
+			name.addElement(row.getName());
+			tbModel_deptList.addRow(name);
+		}
+		
+	}
+
+	@Override
+	public void valueChanged(ListSelectionEvent e) {
+		// TODO Auto-generated method stub
+		selectDeptRow();
+	}
 	
+	public void selectDeptRow() {
+		// 테이블 초기화
+		for (int i = tbModel_leader.getRowCount() - 1; i > -1; i--) {
+			tbModel_leader.removeRow(i);
+		}
+		for (int i = tbModel_empList.getRowCount() - 1; i > -1; i--) {
+			tbModel_empList.removeRow(i);
+		}
 
+		// 데이터 테이블에 추가
+		int rowNum = table_deptList.getSelectedRow();
+		Dept dept = deptList.get(rowNum);
+		area_intro.setText(dept.getIntro());
+		ArrayList<Emp> empList = empMap.get(dept.getName());
+		if (empList != null) {
+			for (Emp emp : empList) {
+				Vector<Object> row = new Vector<>();
+				row.addElement(emp.getPosition());
+				row.addElement(emp.getName());
+				row.addElement(emp.getEmpNo());
+				row.addElement(emp.getEmpNo());
+				if (emp.getEmpNo() == dept.getLeaderNo()) {
+					tbModel_leader.addRow(row);
+				} else {
+					tbModel_empList.addRow(row);
+				}
+			}
+		}
+	}
 }
+
+
