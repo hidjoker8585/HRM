@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -12,6 +14,7 @@ import java.util.TreeMap;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -37,10 +40,10 @@ import util.TableRenderer;
 /**
  * @brief 부서관리 클래스입니다
  * @author 이현우
- * @version v1.01 (2020.02.18)
+ * @version v1.02 (2020.02.19)
  * @see Edit 서브 패널 작업중..
  */
-public class DeptManagePanel extends JPanel implements ListSelectionListener{
+public class DeptManagePanel extends JPanel implements ListSelectionListener, ActionListener{
 
 	//설정 상수 값
 	private static final int TABLE_HEADER_HEIGHT = 40;
@@ -100,6 +103,10 @@ public class DeptManagePanel extends JPanel implements ListSelectionListener{
 	private JTextArea area_inputIntro;
 	private JComboBox<String> combo_inputLeader;
 
+	private JButton btn_clear;
+	private JButton btn_addDept;
+	private JButton btn_editDept;
+	private JButton btn_deleteDept;
 	
 	//테이블 설정
 	private TableModel tbModel_leader;
@@ -120,7 +127,8 @@ public class DeptManagePanel extends JPanel implements ListSelectionListener{
 	private DaoImpl dao;
 	private TreeMap<Dept, ArrayList<Emp>> sourceMap;
 	private ArrayList<Dept> deptList;
-	private HashMap<String,ArrayList<Emp>> empMap;
+	private HashMap<String, Emp> deptLeader;
+	private ArrayList<Emp> empList;
 	
 	//생성자
 	public DeptManagePanel() {
@@ -136,12 +144,14 @@ public class DeptManagePanel extends JPanel implements ListSelectionListener{
 		
 		//부서 설명
 		makeDeptIntroduction();
-		
+
+		//db값 가져오기
+		getData();
+
 		//부서 관리 패널
 		makeEditPanel();
 		
-		//db값 가져오기
-		getData();
+
 	
 
 		add(pane_main);
@@ -286,41 +296,17 @@ public class DeptManagePanel extends JPanel implements ListSelectionListener{
 		
 	}
 	
-	public void makeEditPanel(){
-		
-		pane_sub_edit = new JPanel();
-		pane_sub_edit.setBounds(PANEL_EDIT_X,PANEL_EDIT_Y,PANEL_EDIT_WIDTH,PANEL_EDIT_HEIGHT);
-		pane_sub_edit.setBackground(PANEL_EDIT_BACKGROUND);	
-		
-		lbl_inputName = new JLabel("부서명");
-		lbl_inputName.setBounds(10,10,50,30);
-
-		lbl_inputIntro = new JLabel("부서소개");
-		lbl_inputIntro.setBounds(10,10,50,30);
-
-		lbl_inputLeader = new JLabel("팀장");
-		lbl_inputLeader.setBounds(10,10,50,30);
-		
-		txt_inputName = new JTextField();
-		txt_inputName.setBounds(10,10,100,30);
-		
-		area_inputIntro = new JTextArea();
-		
-		combo_inputLeader = new JComboBox<String>();
-		
-		
-		pane_main.add(pane_sub_edit);
-	}
-	
 	public void getData() {
 		//dao = new DaoImpl();
 		//sourceMap = dao.getAllByDept();
+		//empList = dao.getAllEmp();
 		// 테스트데이터 넣기
 		
 		// 테스트 데이터
 		sourceMap = new TreeMap<>();
 		Dept dept = new Dept();
-		ArrayList empList = new ArrayList<>();
+		empList = new ArrayList<>();
+		ArrayList empAll = new ArrayList<>();
 	    //부서소개 텍스트(테스트 값)
 	    String intro = "\n    인사팀은 직원을 선발하고 배치하며 \n"
 	    		+ "    직원 역량을 개발하고 평가하는 등  \n"
@@ -336,33 +322,37 @@ public class DeptManagePanel extends JPanel implements ListSelectionListener{
 		emp.setPosition("사원");
 		emp.setName("홍길동");
 		emp.setEmpNo(10002);
+		empAll.add(emp);
 		empList.add(emp);
 		emp = new Emp();
 		emp.setDept("인사팀");		
 		emp.setPosition("팀장");
 		emp.setName("김영희");
 		emp.setEmpNo(10004);
+		empAll.add(emp);
 		empList.add(emp);
 		emp = new Emp();
 		emp.setDept("인사팀");		
 		emp.setPosition("사원");
 		emp.setName("김동수");
 		emp.setEmpNo(10003);
+		empAll.add(emp);
 		empList.add(emp);
 		emp = new Emp();
 		emp.setDept("인사팀");		
 		emp.setPosition("사원");
 		emp.setName("대나무");
 		emp.setEmpNo(10005);
+		empAll.add(emp);
 		empList.add(emp);
-		sourceMap.put(dept, empList);
+		sourceMap.put(dept, empAll);
 		
 	    intro = "\n    개발1팀은 솔루션 개발과 유지보수 \n"
 	    		+ "    업무를 담당하고 있습니다   \n"
 	    		+ "    \n"
 	    		+ "    위치 : 본사 4F \n"
 	    		+ "    연락망 : xx-xxxx-xxxx";
-		empList = new ArrayList<>();
+	    empAll = new ArrayList<>();
 	    dept = new Dept();
 		emp = new Emp();
 		dept.setName("개발1팀");
@@ -372,14 +362,16 @@ public class DeptManagePanel extends JPanel implements ListSelectionListener{
 		emp.setPosition("사원");
 		emp.setName("줄리앙");
 		emp.setEmpNo(10011);
+		empAll.add(emp);
 		empList.add(emp);
 		emp = new Emp();
 		emp.setDept("개발1팀");		
 		emp.setPosition("팀장");
 		emp.setName("박혁");
 		emp.setEmpNo(10007);
+		empAll.add(emp);
 		empList.add(emp);
-		sourceMap.put(dept, empList);	
+		sourceMap.put(dept, empAll);	
 	    dept = new Dept();
 		//emp = new Emp();
 		dept.setName("홍보팀");
@@ -388,18 +380,107 @@ public class DeptManagePanel extends JPanel implements ListSelectionListener{
 
 		// 데이터 분배하기
 		deptList = new ArrayList<>();
-		empMap = new HashMap<>();
+		deptLeader = new HashMap<>();
 		
 		Iterator<Map.Entry<Dept, ArrayList<Emp>>> iter = sourceMap.entrySet().iterator();
 		while ( iter.hasNext()) {
 			Map.Entry<Dept, ArrayList<Emp>> entry = iter.next();
 			Dept row = (Dept)entry.getKey();
 			deptList.add(row);
-			empMap.put(row.getName(), entry.getValue());
+			if(entry.getValue() == null) {
+				deptLeader.put(row.getName(), null);
+			}else {
+				for (Emp e : entry.getValue()) {
+					if(e.getEmpNo()==row.getLeaderNo()) {
+						deptLeader.put(row.getName(), e);
+					}
+				}
+			}
 			Vector<Object> name = new Vector<>();
 			name.addElement(row.getName());
 			tbModel_deptList.addRow(name);
 		}
+	}
+	
+	public void makeEditPanel(){
+		
+		//패널 설정
+		pane_sub_edit = new JPanel();
+		pane_sub_edit.setBounds(PANEL_EDIT_X,PANEL_EDIT_Y,PANEL_EDIT_WIDTH,PANEL_EDIT_HEIGHT);
+		pane_sub_edit.setBackground(PANEL_EDIT_BACKGROUND);	
+		pane_sub_edit.setLayout(null);
+		
+		//레이블 설정
+		lbl_inputName = new JLabel("부서명");
+		lbl_inputName.setBounds(30,50,100,40);
+		lbl_inputName.setHorizontalAlignment(JLabel.CENTER);
+		lbl_inputName.setFont(TABLE_HEADER_FONT);
+
+		lbl_inputIntro = new JLabel("부서소개");
+		lbl_inputIntro.setBounds(30,120,100,40);
+		lbl_inputIntro.setHorizontalAlignment(JLabel.CENTER);
+		lbl_inputIntro.setFont(TABLE_HEADER_FONT);
+
+		lbl_inputLeader = new JLabel("팀장");
+		lbl_inputLeader.setBounds(30,340,100,40);
+		lbl_inputLeader.setHorizontalAlignment(JLabel.CENTER);
+		lbl_inputLeader.setFont(TABLE_HEADER_FONT);
+		
+		//텍스트필드 설정
+		txt_inputName = new JTextField();
+		txt_inputName.setBounds(140,50,260,40);
+		txt_inputName.setFont(TABLE_CELL_FONT);
+		
+		//텍스트에어리어 설정
+		area_inputIntro = new JTextArea();
+		area_inputIntro.setBounds(140,120,260,190);
+		area_inputIntro.setBackground(TABLE_HEADER_BACKGROUND);
+		area_inputIntro.setLineWrap(true);
+		area_inputIntro.setFont(AREA_INTRODUCTION_FONT);
+
+		//콤보박스 설정
+		String[] leaderArr = new String[empList.size()+1];
+		leaderArr[0] = "팀장을 선택하세요";
+		int count = 1;
+		for (Emp e  : empList) {
+			leaderArr[count] = e.getName() + "_사번:"+e.getEmpNo();
+			count++;
+		}
+		combo_inputLeader = new JComboBox<String>(leaderArr);
+		combo_inputLeader.setBounds(140,340,260,40);
+		combo_inputLeader.setFont(TABLE_CELL_FONT);
+		combo_inputLeader.setEditable(false);
+		
+		//버튼 설정
+		btn_clear = new JButton("비우기");
+		btn_clear.setBounds(480,50,150,40);
+		btn_clear.addActionListener(this);
+		
+		btn_addDept = new JButton("추가");
+		btn_addDept.setBounds(480,200,150,40);
+		btn_addDept.addActionListener(this);
+	
+		btn_editDept = new JButton("수정");
+		btn_editDept.setBounds(480,270,150,40);
+		btn_editDept.addActionListener(this);
+		
+		btn_deleteDept = new JButton("삭제");
+		btn_deleteDept.setBounds(480,340,150,40);
+		btn_deleteDept.addActionListener(this);
+		
+		//컴포넌트 서브 컨테이너에 추가
+		pane_sub_edit.add(lbl_inputName);
+		pane_sub_edit.add(txt_inputName);
+		pane_sub_edit.add(lbl_inputIntro);
+		pane_sub_edit.add(area_inputIntro);
+		pane_sub_edit.add(lbl_inputLeader);
+		pane_sub_edit.add(combo_inputLeader);
+		pane_sub_edit.add(btn_clear);
+		pane_sub_edit.add(btn_addDept);
+		pane_sub_edit.add(btn_editDept);
+		pane_sub_edit.add(btn_deleteDept);
+	
+		pane_main.add(pane_sub_edit);
 	}
 
 	@Override
@@ -418,18 +499,54 @@ public class DeptManagePanel extends JPanel implements ListSelectionListener{
 		int rowNum = table_deptList.getSelectedRow();
 		Dept dept = deptList.get(rowNum);
 		area_intro.setText(dept.getIntro());
-		ArrayList<Emp> empList = empMap.get(dept.getName());
-		if (empList != null) {
-			for (Emp emp : empList) {
-				if (emp.getEmpNo() == dept.getLeaderNo()) {
-					Vector<Object> row = new Vector<>();
-					row.addElement(emp.getPosition());
-					row.addElement(emp.getName());
-					row.addElement(emp.getEmpNo());
-					row.addElement(emp.getEmpNo());
-					tbModel_leader.addRow(row);
+		Emp emp = deptLeader.get(dept.getName());
+		if (emp != null) {
+			Vector<Object> row = new Vector<>();
+			row.addElement(emp.getPosition());
+			row.addElement(emp.getName());
+			row.addElement(emp.getEmpNo());
+			row.addElement(emp.getEmpNo());
+			tbModel_leader.addRow(row);
+		}
+		
+		// 데이터 에디터창에 추가
+		txt_inputName.setText(dept.getName());
+		area_inputIntro.setText(dept.getIntro());
+		Emp leader = deptLeader.get(dept.getName());
+		if(leader==null) {
+			combo_inputLeader.setSelectedIndex(0);
+		}else {
+			combo_inputLeader.setSelectedItem(leader.getName()+"_사번:"+leader.getEmpNo());
+		}
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		if(e.getSource()==btn_clear) {
+			txt_inputName.setText("");
+			area_inputIntro.setText("");
+			combo_inputLeader.setSelectedIndex(0);
+		}
+		if(e.getSource()==btn_addDept) {
+			Dept dept = new Dept();
+			dept.setName(txt_inputName.getText().trim());
+			dept.setIntro(area_inputIntro.getText());
+			dept.setLeaderNo(Integer.parseInt(((String)combo_inputLeader.getSelectedItem()).split("_사번")[1]));
+			//dao.addDept(dept)
+			
+			for (Emp data : empList) {
+				if(dept.getLeaderNo()==data.getEmpNo()) {
+					deptLeader.put(dept.getName(),data);
 				}
 			}
+			
+		}
+		if(e.getSource()==btn_editDept) {
+			
+		}
+		if(e.getSource()==btn_deleteDept) {
+			
 		}
 	}
 }
