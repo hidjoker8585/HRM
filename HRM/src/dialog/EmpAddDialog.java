@@ -1,24 +1,251 @@
 package dialog;
 
-import java.awt.Dimension;
+import java.awt.*;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 
 /**
- * @brief
- * @author 
- * @version 
- * @see 
+ * @brief 사원 등록 다이얼로그
+ * @author 박영훈
+ * @version v1.00 2020.02.11
+ * @see none
  */
-public class EmpAddDialog extends JDialog{
+public class EmpAddDialog extends JDialog {
+
 	public EmpAddDialog(JFrame f, String msg, boolean modal) {
 		// TODO Auto-generated constructor stub
 		super(f,msg,modal);
 		
-		setSize(new Dimension(660,880)); //다이얼로그 크기
+		setSize(new Dimension(600,800)); //다이얼로그 크기
 		setLocationRelativeTo(null); //가운데 위치
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE); //닫기
+		setLayout(null);
 
+		//사원번호
+		Label emp_no = new Label("사원번호 : ");
+		emp_no.setBounds(200,90,80,40);
+		add(emp_no);
+		TextField emp_noT = new TextField("자동생성 됩니다");
+		emp_noT.setBounds(300,100,120,20);
+		
+		add(emp_noT);
+
+		//사원이름
+		Label emp_name = new Label("사원이름 : ");
+		emp_name.setBounds(200,120,80,40);
+		add(emp_name);
+		TextField name_t = new TextField("");
+		name_t.setBounds(300,130,120,20);
+		add(name_t);
+
+		Label mobile_no = new Label("핸드폰번호 : ");
+		mobile_no.setBounds(200, 150, 80, 40);
+		add(mobile_no);
+		Choice mobile_noT1 = new Choice();
+		mobile_noT1.setBounds(300,160,50,20);
+		mobile_noT1.add("010");
+		mobile_noT1.add("011");
+		add(mobile_noT1);
+		TextField mobile_noT2 = new TextField("");
+		mobile_noT2.setBounds(360,160,70,20);
+		add(mobile_noT2);
+		TextField mobile_noT3 = new TextField("");
+		mobile_noT3.setBounds(440,160,70,20);
+		add(mobile_noT3);
+		
+		Label email = new Label("e-mail : ");
+		email.setBounds(200, 180, 80, 40);
+		add(email);
+		TextField emailT = new TextField("");
+		emailT.setBounds(300,190,90,20);
+		add(emailT);
+		Label email_la1 = new Label("@");
+		email_la1.setBounds(390, 190, 20, 20);
+		add(email_la1);
+		TextField emailT1 = new TextField("");
+		emailT1.setBounds(410,190,80,20);
+		add(emailT1);
+		
+		Choice email_c = new Choice();
+		email_c.setBounds(490, 190, 70, 40);
+		email_c.add("직접입력");
+		email_c.add("naver.com");
+		email_c.add("gmail.com");
+		email_c.add("daum.net");
+		add(email_c);
+		
+		Label address = new Label("주소 : ");
+		address.setBounds(200, 210, 80, 40);
+		add(address);
+		TextField addressT = new TextField("");
+		addressT.setBounds(300,220,250,40);
+		add(addressT);
+		
+		Label school = new Label("출신학교 : ");
+		school.setBounds(60, 280, 80, 40);
+		add(school);
+		TextField schoolT = new TextField("");
+		schoolT.setBounds(160,290,200,20);
+		add(schoolT);
+		
+		
+		//사진등록
+		Canvas c= new Canvas();
+		c.setBounds(50,100,110,120);
+		c.setBackground(Color. GRAY);
+		add(c);
+		Button pic_b1 = new Button("사진등록");
+		pic_b1.setBackground(Color. YELLOW);
+		pic_b1.setBounds(63, 235, 80, 30);
+		add(pic_b1);
+		
+		//생년월일 등록
+		Label birth = new Label("생년월일 : ");
+		birth.setBounds(60, 310, 80, 40);
+		add(birth);
+		TextField birthT = new TextField("");
+		birthT.setBounds(160, 320, 50, 20);
+		add(birthT);
+		TextField birthT2 = new TextField("");
+		birthT2.setBounds(220, 320, 30, 20);
+		add(birthT2);
+		TextField birthT3 = new TextField("");
+		birthT3.setBounds(260, 320, 30, 20);
+		add(birthT3);
+		Label birth_la1 = new Label("ex) 1986. 09. 20");
+		birth_la1.setBounds(300, 310, 100, 40);
+		add(birth_la1);
+		
+		//입사일 등록
+		Label startwork = new Label("입사일 : ");
+		startwork.setBounds(60, 340, 80, 40);
+		add(startwork);
+		TextField startworkT = new TextField("");
+		startworkT.setBounds(160, 350, 50, 20);
+		add(startworkT);
+		TextField startworkT2 = new TextField("");
+		startworkT2.setBounds(220, 350, 30, 20);
+		add(startworkT2);
+		TextField startworkT3 = new TextField("");
+		startworkT3.setBounds(260, 350, 30, 20);
+		add(startworkT3);
+		Label startwork_la1 = new Label("ex) 1990. 09. 20");
+		startwork_la1.setBounds(300, 340, 100, 40);
+		add(startwork_la1);
+		
+		//직급등록
+		Label rank_name = new Label("직급 : ");
+		rank_name.setBounds(60, 370, 80, 40);
+		add(rank_name);
+		
+		Choice rank_nameC = new Choice();
+		rank_nameC.setBounds(160, 380, 120, 40);
+		rank_nameC.add("직급선택");
+		rank_nameC.add("사장");
+		rank_nameC.add("팀장");
+		rank_nameC.add("사원");
+		add(rank_nameC);
+		
+		//호봉등록
+		Label paylevel_no = new Label("호봉 : ");
+		paylevel_no.setBounds(300, 370, 80, 40);
+		add(paylevel_no);
+			
+		Choice paylevel_noC = new Choice();
+		paylevel_noC.setBounds(400, 380, 120, 40);
+		paylevel_noC.add("호봉선택");
+		paylevel_noC.add("1급");
+		paylevel_noC.add("2급");
+		paylevel_noC.add("3급");
+		add(paylevel_noC);
+		
+		//부서등록
+		Label dep_name = new Label("부서 : ");
+		dep_name.setBounds(60, 400, 80, 40);
+		add(dep_name);
+			
+		Choice dep_nameC = new Choice();
+		dep_nameC.setBounds(160, 410, 120, 40);
+		dep_nameC.add("부서선택");
+		dep_nameC.add("인사부");
+		dep_nameC.add("영업부");
+		dep_nameC.add("관리부");
+		dep_nameC.add("디자인부");
+		dep_nameC.add("기술부");
+		dep_nameC.add("IT부");
+		dep_nameC.add("마케팅부");
+		add(dep_nameC);
+		
+		//계좌번호 등록
+		Label bank_account = new Label("계좌번호 : ");
+		bank_account.setBounds(60, 430, 80, 40);
+		add(bank_account);
+		TextField bank_accountT = new TextField("");
+		bank_accountT.setBounds(160,440,200,20);
+		add(bank_accountT);
+		TextField bank_nameT = new TextField("");
+		bank_nameT.setBounds(380,440,80,20);
+		add(bank_nameT);
+		Label bank_name = new Label(" 은행");
+		bank_name.setBounds(460, 430, 40, 40);
+		add(bank_name);
+		
+		//취미등록
+		Label hobby = new Label("취미 : ");
+		hobby.setBounds(60, 460, 80, 40);
+		add(hobby);
+		TextField hobbyT = new TextField("");
+		hobbyT.setBounds(160,470,300,40);
+		add(hobbyT);
+		
+		//특기등록
+		Label specialty = new Label("특기 : ");
+		specialty.setBounds(60, 510, 80, 40);
+		add(specialty);
+		TextField specialtyT = new TextField("");
+		specialtyT.setBounds(160,520,300,40);
+		add(specialtyT);
+
+		/*
+		CheckboxGroup gg= new CheckboxGroup();
+		Checkbox mm = new Checkbox("남자" , gg, true);
+		Checkbox ff = new Checkbox("여자", gg, false);
+		add(ff);
+		add(mm);
+		mm.setBounds(240,100,50,50);
+		ff.setBounds(300,100,50,50);
+
+		Label id_la = new Label("*아이디 : ");
+		id_la.setBounds(50, 180, 80, 50);
+		add(id_la);
+		
+		TextField id_t = new TextField("");
+		id_t.setBounds(140, 193, 80, 20);
+		add(id_t);
+		Button b = new Button("*아이디 중복 확인");
+		b.setBounds(250,193,110,20);
+		add(b);
+
+		*/
+		
+		//보턴
+		Button clear_b = new Button("신규");
+		clear_b.setBackground(Color. YELLOW);
+		clear_b.setBounds(63, 600, 80, 30);
+		add(clear_b);
+		
+		Button save_b = new Button("저장");
+		save_b.setBackground(Color. YELLOW);
+		save_b.setBounds(300, 600, 80, 30);
+		add(save_b);
+		
+		Button mod_b = new Button("수정");
+		mod_b.setBackground(Color. YELLOW);
+		mod_b.setBounds(400, 600, 80, 30);
+		add(mod_b);
+		
 	}
+
 }
+

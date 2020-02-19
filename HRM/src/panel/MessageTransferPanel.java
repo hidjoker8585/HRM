@@ -144,7 +144,7 @@ public class MessageTransferPanel extends JPanel{
 		colModel_emp.getColumn(0).setCellRenderer(defaultRenderer);
 		colModel_emp.getColumn(1).setCellRenderer(defaultRenderer);
 		colModel_emp.getColumn(2).setCellRenderer(defaultRenderer);
-		colModel_emp.getColumn(3).setCellEditor(new TableEditor("check"));
+		colModel_emp.getColumn(3).setCellEditor(new TableEditor("check",null));
 		colModel_emp.getColumn(3).setCellRenderer(new TableRenderer("check"));
 
 		//테이블 셀 사이즈
