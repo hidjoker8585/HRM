@@ -13,6 +13,7 @@ import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -81,6 +82,7 @@ public class DeptManagePanel extends JPanel implements ListSelectionListener{
 	private static final int PANEL_EDIT_HEIGHT = 450;
 	
 	//컨테이너
+	private JFrame frame;
 	private JPanel pane_main;
 	private JPanel pane_sub_intro;
 	private JPanel pane_sub_edit;
@@ -123,7 +125,9 @@ public class DeptManagePanel extends JPanel implements ListSelectionListener{
 	private HashMap<String,ArrayList<Emp>> empMap;
 	
 	//생성자
-	public DeptManagePanel() {
+	public DeptManagePanel(JFrame f) {
+		
+		frame = f;
 		
 		//패널 초기 설정
 		initPanel();
@@ -234,7 +238,7 @@ public class DeptManagePanel extends JPanel implements ListSelectionListener{
 		colModel_leader.getColumn(0).setCellRenderer(defaultRenderer);
 		colModel_leader.getColumn(1).setCellRenderer(defaultRenderer);
 		colModel_leader.getColumn(2).setCellRenderer(defaultRenderer);
-		colModel_leader.getColumn(3).setCellEditor(new TableEditor("button"));
+		colModel_leader.getColumn(3).setCellEditor(new TableEditor("button",frame));
 		colModel_leader.getColumn(3).setCellRenderer(new TableRenderer("button"));
 			
 		//테이블 셀 사이즈

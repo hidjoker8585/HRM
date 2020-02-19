@@ -9,10 +9,14 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
+
+import dialog.EmpDetailDialog;
 /**
  * @brief 테이블 셀 에디터 클래스입니다
  *     	   버튼,콤보박스,체크박스 3종류를 지원합니다
@@ -27,15 +31,20 @@ public class TableEditor extends AbstractCellEditor implements TableCellEditor, 
 
 	private String type;
 
+	private JFrame frame;
+	private JDialog empDetailDialog;
+
 	private JComboBox<String> combo;
 	private JCheckBox check;
 	private JButton button;
 	
 	private int empNo;
 	
-	public TableEditor(String msg){
+	public TableEditor(String msg,JFrame f){
 		// TODO Auto-generated constructor stub
 		type = msg;
+		frame = f;
+		
 		if (type.equals("button")) {
 			button = new JButton();
 			button.setOpaque(true);
@@ -60,7 +69,8 @@ public class TableEditor extends AbstractCellEditor implements TableCellEditor, 
 	public Object getCellEditorValue() {
 		// TODO Auto-generated method stub
 		if(type.equals("button")) {
-			JOptionPane.showMessageDialog(button,"버튼 눌림! "+empNo);
+			empDetailDialog = new EmpDetailDialog(frame, "상세보기", true, empNo);
+			empDetailDialog.setVisible(true);
 			return empNo;
 		}else if(type.equals("combo")) {
 			JOptionPane.showMessageDialog(combo, "콤보선택"+combo.getSelectedItem());

@@ -12,6 +12,7 @@ import java.util.TreeMap;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -84,6 +85,7 @@ public class DeptLookupPanel extends JPanel implements ListSelectionListener{
 	private static final int PANEL_INTRODUCTION_HEIGHT = 260;
 	
 	//컨테이너
+	private JFrame frame;
 	private JPanel pane_main;
 	private JPanel pane_sub_intro;
 	
@@ -123,8 +125,10 @@ public class DeptLookupPanel extends JPanel implements ListSelectionListener{
 	
 	
 	//생성자
-	public DeptLookupPanel() {
+	public DeptLookupPanel(JFrame f) {
 		// TODO Auto-generated constructor stub
+		
+		frame = f;
 		
 		//패널 초기 설정
 		initPanel();
@@ -236,7 +240,7 @@ public class DeptLookupPanel extends JPanel implements ListSelectionListener{
 		colModel_leader.getColumn(0).setCellRenderer(defaultRenderer);
 		colModel_leader.getColumn(1).setCellRenderer(defaultRenderer);
 		colModel_leader.getColumn(2).setCellRenderer(defaultRenderer);
-		colModel_leader.getColumn(3).setCellEditor(new TableEditor("button"));
+		colModel_leader.getColumn(3).setCellEditor(new TableEditor("button",frame));
 		colModel_leader.getColumn(3).setCellRenderer(new TableRenderer("button"));
 			
 		//테이블 셀 사이즈
@@ -292,7 +296,7 @@ public class DeptLookupPanel extends JPanel implements ListSelectionListener{
 		//colModel_emp.getColumn(2).setCellEditor(new TableEditor(arr));
 		//colModel_emp.getColumn(2).setCellRenderer(new TableRenderer(arr));
 		colModel_emp.getColumn(2).setCellRenderer(defaultRenderer);
-		colModel_emp.getColumn(3).setCellEditor(new TableEditor("button"));
+		colModel_emp.getColumn(3).setCellEditor(new TableEditor("button",frame));
 		colModel_emp.getColumn(3).setCellRenderer(new TableRenderer("button"));
 
 		//테이블 셀 사이즈

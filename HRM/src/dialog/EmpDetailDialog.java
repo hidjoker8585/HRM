@@ -19,7 +19,8 @@ import javax.swing.JFrame;
  */
 
 public class EmpDetailDialog extends JDialog{
-	public EmpDetailDialog(JFrame f, String msg, boolean modal) {
+	private int empNo;
+	public EmpDetailDialog(JFrame f, String msg, boolean modal,int num) {
 		// TODO Auto-generated constructor stub
 		super(f,msg,modal);
 		

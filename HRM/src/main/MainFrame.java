@@ -81,7 +81,6 @@ public class MainFrame extends JFrame implements ActionListener{
 	private JDialog boardWriteDialog;
 	private JDialog creditDialog;
 	private JDialog empAddDialog;
-	private JDialog empDetailDialog;
 	private JDialog empUpdateDialog;
 	private JDialog helpDialog;
 	private JDialog LoginDialog;
@@ -152,7 +151,6 @@ public class MainFrame extends JFrame implements ActionListener{
 		boardWriteDialog = new BoardWriteDialog(this,"게시글작성",true);
 		creditDialog = new CreditDialog(this,"크레딧",true);
 		empAddDialog = new EmpAddDialog(this,"사원등록",true);
-		empDetailDialog = new EmpDetailDialog(this,"사원상세",true);
 		empUpdateDialog = new EmpUpdateDialog(this,"사원수정",true);
 		helpDialog = new HelpDialog(this,"도움말",true);
 		LoginDialog = new LoginDialog(this,"로그인",true);
@@ -162,8 +160,8 @@ public class MainFrame extends JFrame implements ActionListener{
 		
 		//주패널 생성
 		boardListPane = new BoardListPanel();
-		deptLookupPane = new DeptLookupPanel();
-		deptManagePane = new DeptManagePanel();
+		deptLookupPane = new DeptLookupPanel(this);
+		deptManagePane = new DeptManagePanel(this);
 		empLookupPane = new EmpLookupPanel();
 		evlExecPane = new EvaluationExecPanel();
 		evlManagePane = new EvaluationManagePanel();
