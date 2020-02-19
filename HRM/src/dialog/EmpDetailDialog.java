@@ -27,7 +27,7 @@ public class EmpDetailDialog extends JDialog{
 		setSize(new Dimension(600,880)); //다이얼로그 크기
 		setLocationRelativeTo(null); //가운데 위치
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE); //닫기
-		//조회 선택
+
 		
 		Label search = new Label("조회 : ");
 		search.setBounds(200,50,80,40);

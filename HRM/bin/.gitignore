@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /dialog/
 /main/
 =======
@@ -10,3 +11,12 @@
 /resource/
 /util/
 >>>>>>> refs/remotes/origin/master
+=======
+/dao/
+/dialog/
+/dto/
+/main/
+/panel/
+/resource/
+/util/
+>>>>>>> refs/remotes/origin/LHW
