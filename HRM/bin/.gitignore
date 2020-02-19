@@ -1,2 +1,12 @@
+<<<<<<< HEAD
 /dialog/
 /main/
+=======
+/dao/
+/dialog/
+/dto/
+/main/
+/panel/
+/resource/
+/util/
+>>>>>>> refs/remotes/origin/master

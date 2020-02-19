@@ -137,11 +137,13 @@ public class MainFrame extends JFrame implements ActionListener{
 		setSize(new Dimension(1280,768)); //프레임 크기
 		setLocationRelativeTo(null); //가운데 위치
 		
+	
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setVisible(true);
 		
 		root = getContentPane();
-		root.setLayout(new GridLayout(1,1));				
+		root.setLayout(new GridLayout(1,1));
+		
 
 		//다이얼로그 생성
 		aboutDialog = new AboutDialog(this,"대하여",true);
@@ -173,7 +175,6 @@ public class MainFrame extends JFrame implements ActionListener{
 	}
 	
 	public void loginProc() {
-		
 	}
 	
 	public void makeMenuBar() {
@@ -281,7 +282,7 @@ public class MainFrame extends JFrame implements ActionListener{
 		// TODO Auto-generated method stub
 		
 		if(e.getSource()==miLogout) {
-			JOptionPane.showMessageDialog(this, "작업중");
+			LoginDialog.setVisible(true);
 		}else if(e.getSource()==miSch) {
 			root.removeAll();
 			root.add(schManagePane);
