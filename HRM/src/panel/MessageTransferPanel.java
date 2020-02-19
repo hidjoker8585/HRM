@@ -12,6 +12,7 @@ import java.util.TreeMap;
 import java.util.Vector;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -48,12 +49,12 @@ public class MessageTransferPanel extends JPanel{
 	
 	private static final int TABLE_EMP_X = 50;
 	private static final int TABLE_EMP_Y = 50;
-	private static final int TABLE_EMP_WIDTH = 550;
-	private static final int TABLE_EMP_HEIGHT = 550;
+	private static final int TABLE_EMP_WIDTH = 500;
+	private static final int TABLE_EMP_HEIGHT = 500;
 	private static final int TABLE_EMP_COL1_WIDTH = 150;
 	private static final int TABLE_EMP_COL2_WIDTH = 150;
 	private static final int TABLE_EMP_COL3_WIDTH = 150;
-	private static final int TABLE_EMP_COL4_WIDTH = 100;
+	private static final int TABLE_EMP_COL4_WIDTH = 50;
 	
 	//컨테이너
 	private JPanel pane_main;
@@ -102,7 +103,7 @@ public class MessageTransferPanel extends JPanel{
 		txt.setBounds(610,150,500,300);
 		
 		JButton btn2 = new JButton("보내기");
-		btn2.setBounds(800,470,100,30);
+		btn2.setBounds(1010,465,100,30);
 		
 		pane_main.add(btn1);
 		pane_main.add(txt);
@@ -117,7 +118,7 @@ public class MessageTransferPanel extends JPanel{
 		colNames.addElement("부서");
 		colNames.addElement("이름");
 		colNames.addElement("사번");
-		colNames.addElement("보내기");
+		colNames.addElement("확인");
 		
 		// 테이블 모델 설정
 		//tbModel_empList = new TableModel(colNames,0,2,3);
@@ -136,12 +137,12 @@ public class MessageTransferPanel extends JPanel{
 		table_empList.setFont(TABLE_CELL_FONT);
 
 		// 셀 에디터,렌더러 설정
+		defaultRenderer = new DefaultTableCellRenderer();
+		// 셀 에디터,렌더러 설정 ,가운데정렬
+		defaultRenderer.setHorizontalAlignment(JLabel.CENTER);
 		colModel_emp = table_empList.getColumnModel();
 		colModel_emp.getColumn(0).setCellRenderer(defaultRenderer);
 		colModel_emp.getColumn(1).setCellRenderer(defaultRenderer);
-		//String[] arr = {"A","B","C","D","E"};
-		//colModel_emp.getColumn(2).setCellEditor(new TableEditor(arr));
-		//colModel_emp.getColumn(2).setCellRenderer(new TableRenderer(arr));
 		colModel_emp.getColumn(2).setCellRenderer(defaultRenderer);
 		colModel_emp.getColumn(3).setCellEditor(new TableEditor("check"));
 		colModel_emp.getColumn(3).setCellRenderer(new TableRenderer("check"));
