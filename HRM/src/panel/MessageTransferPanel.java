@@ -138,7 +138,7 @@ public class MessageTransferPanel extends JPanel{
 
 		// 셀 에디터,렌더러 설정
 		defaultRenderer = new DefaultTableCellRenderer();
-		// 셀 에디터,렌더러 설정 ,가운데정렬
+		// 셀 에디터,렌더러 설정 ,가운데정렬,20200219
 		defaultRenderer.setHorizontalAlignment(JLabel.CENTER);
 		colModel_emp = table_empList.getColumnModel();
 		colModel_emp.getColumn(0).setCellRenderer(defaultRenderer);
