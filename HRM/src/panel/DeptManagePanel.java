@@ -18,6 +18,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -41,8 +42,8 @@ import util.TableRenderer;
 /**
  * @brief 부서관리 클래스입니다
  * @author 이현우
- * @version v1.02 (2020.02.19)
- * @see Edit 서브 패널 작업중..
+ * @version v1.03 (2020.02.20)
+ * @see 코드 정리중..
  */
 public class DeptManagePanel extends JPanel implements ListSelectionListener, ActionListener{
 
@@ -498,9 +499,12 @@ public class DeptManagePanel extends JPanel implements ListSelectionListener, Ac
 		for (int i = tbModel_leader.getRowCount() - 1; i > -1; i--) {
 			tbModel_leader.removeRow(i);
 		}
+		// intro 초기화
+		area_intro.setText("");
 
 		// 데이터 테이블에 추가
 		int rowNum = table_deptList.getSelectedRow();
+		if(rowNum==-1) return;
 		Dept dept = deptList.get(rowNum);
 		area_intro.setText(dept.getIntro());
 		Emp emp = deptLeader.get(dept.getName());
@@ -528,29 +532,188 @@ public class DeptManagePanel extends JPanel implements ListSelectionListener, Ac
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if(e.getSource()==btn_clear) {
-			txt_inputName.setText("");
-			area_inputIntro.setText("");
-			combo_inputLeader.setSelectedIndex(0);
+			clearEdit();
 		}
 		if(e.getSource()==btn_addDept) {
-			Dept dept = new Dept();
-			dept.setName(txt_inputName.getText().trim());
-			dept.setIntro(area_inputIntro.getText());
-			dept.setLeaderNo(Integer.parseInt(((String)combo_inputLeader.getSelectedItem()).split("_사번")[1]));
-			//dao.addDept(dept)
-			
-			for (Emp data : empList) {
-				if(dept.getLeaderNo()==data.getEmpNo()) {
-					deptLeader.put(dept.getName(),data);
-				}
+			boolean res = validateData();
+			if(res) {
+				addDept();
+				clearEdit();
 			}
-			
 		}
 		if(e.getSource()==btn_editDept) {
-			
+			boolean res = validateData();
+			if(res) {
+				editDept();
+			}
 		}
 		if(e.getSource()==btn_deleteDept) {
-			
+			boolean res = validateData();
+			if(res) {
+				deleteDept();
+				clearEdit();
+			}
 		}
+	}
+	
+	public void clearEdit() {
+		txt_inputName.setText("");
+		area_inputIntro.setText("");
+		combo_inputLeader.setSelectedIndex(0);
+	}
+	public boolean validateData() {
+		if(txt_inputName.getText().trim().equals("")) {
+			JOptionPane.showMessageDialog(this, "부서이름을 입력하세요");
+			return false;
+		}else if(txt_inputName.getText().trim().length()>10) {
+			JOptionPane.showMessageDialog(this, "부서이름을 10자 이내로 입력하세요");
+			return false;
+		}
+		return true;
+		
+	}
+	public void addDept() {
+		//동일 부서 체크
+		int selectedRow = -1;
+		for(int count=0 ;count<tbModel_deptList.getRowCount();count++ ) {
+			if(((String)tbModel_deptList.getValueAt(count, 0)).equals(txt_inputName.getText().trim())) {
+				selectedRow = count;
+				break;
+			}
+		}
+		if(selectedRow!=-1) {
+			JOptionPane.showMessageDialog(this, "같은 이름의 부서가 이미 존재합니다");
+			return;
+		}
+		
+		//db 추가
+		Dept dept = new Dept();
+		dept.setName(txt_inputName.getText().trim());
+		dept.setIntro(area_inputIntro.getText());
+		if(combo_inputLeader.getSelectedIndex()>0) {
+			dept.setLeaderNo(Integer.parseInt(((String)combo_inputLeader.getSelectedItem()).split("_사번:")[1]));
+		}
+		//dao.addDept(dept)
+		
+		//deptList에 추가
+		deptList.add(dept);
+		
+		//deptLeader에 추가
+		for (Emp data : empList) {
+			if(dept.getLeaderNo()==data.getEmpNo()) {
+				deptLeader.put(dept.getName(),data);
+			}
+		}
+		//테이블에 추가
+		System.out.println("테이블에 추가");
+		Vector<Object> row = new Vector<>();
+		row.addElement(dept.getName());
+		tbModel_deptList.addRow(row);
+		
+		JOptionPane.showMessageDialog(this, "추가완료");
+
+	}
+	
+	public void editDept() {
+		//동일 부서 체크
+		int selectedRow = -1;
+		for(int count=0 ;count<tbModel_deptList.getRowCount();count++ ) {
+			if(count == table_deptList.getSelectedRow()) continue;
+			if(((String)tbModel_deptList.getValueAt(count, 0)).equals(txt_inputName.getText().trim())) {
+				selectedRow = count;
+				break;
+			}
+		}
+		if(selectedRow!=-1) {
+			JOptionPane.showMessageDialog(this, "같은 이름의 부서가 이미 존재합니다");
+			return;
+		}
+		
+		//db 수정
+		Dept dept = new Dept();
+		dept.setName(txt_inputName.getText().trim());
+		dept.setIntro(area_inputIntro.getText());
+		if(combo_inputLeader.getSelectedIndex()>0) {
+			dept.setLeaderNo(Integer.parseInt(((String)combo_inputLeader.getSelectedItem()).split("_사번:")[1]));
+		}else {
+			dept.setLeaderNo(0);
+		}
+		//dao.updateDept(dept)
+		
+		//deptList 수정
+		int rowNum = table_deptList.getSelectedRow();
+		deptList.set(rowNum, dept);
+		
+		//deptLeader 수정
+		if(combo_inputLeader.getSelectedIndex()>0) {
+			int leader = Integer.parseInt(((String)combo_inputLeader.getSelectedItem()).split("_사번:")[1]);
+			for (Emp data : empList) {
+				if(data.getEmpNo()==leader) {
+					deptLeader.put(dept.getName(), data);
+				}
+			}
+		}else {
+			deptLeader.put(dept.getName(), null);
+		}
+		
+		//테이블 수정
+		tbModel_deptList.setValueAt(txt_inputName.getText().trim(), rowNum, 0);
+		
+		//인트로 수정
+		area_intro.setText(dept.getIntro());
+		
+		//리더테이블 수정
+		for (int i = tbModel_leader.getRowCount() - 1; i > -1; i--) {
+			tbModel_leader.removeRow(i);
+		}
+		Emp emp = deptLeader.get(dept.getName());
+		if (emp != null) {
+			Vector<Object> row = new Vector<>();
+			row.addElement(emp.getPosition());
+			row.addElement(emp.getName());
+			row.addElement(emp.getEmpNo());
+			row.addElement(emp.getEmpNo());
+			tbModel_leader.addRow(row);
+		}
+		
+		JOptionPane.showMessageDialog(this, "수정완료");
+
+	}
+	
+	public void deleteDept() {
+		//deptList삭제
+		int selectedRow = -1;
+		for(int count=0 ;count<tbModel_deptList.getRowCount();count++ ) {
+			if(((String)tbModel_deptList.getValueAt(count, 0)).equals(txt_inputName.getText().trim())) {
+				selectedRow = count;
+				break;
+			}
+		}
+		if(selectedRow == -1) {
+			JOptionPane.showMessageDialog(this, "일치하는 부서명을 찾을 수가 없습니다");
+			return;
+		}else {
+			Object[] option = {"예","아니오"};
+			table_deptList.setRowSelectionInterval(selectedRow, selectedRow);
+			int selected = JOptionPane.showOptionDialog(this, "선택된 부서를 삭제하시겠습니까?", "부서삭제", JOptionPane.YES_NO_OPTION
+										, JOptionPane.QUESTION_MESSAGE, null, option, option[1]);
+			if(selected==1) return;
+		}
+		
+		deptList.remove(selectedRow);
+
+		//db 삭제
+		Dept dept = new Dept();
+		dept.setName(txt_inputName.getText().trim());
+		//dao.deleteDept(dept);
+
+		//deptLeader삭제
+		deptLeader.remove(dept.getName());
+
+		//테이블 삭제
+		tbModel_deptList.removeRow(selectedRow);
+		
+		JOptionPane.showMessageDialog(this, "삭제완료");
+
 	}
 }
