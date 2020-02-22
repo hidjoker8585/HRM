@@ -80,20 +80,11 @@ public class NoticeBoard {
 		mainPanel.setLayout(null);
 		mainPanel.setVisible(false);
 		
-		lblNewLabel = new JLabel("Welcom~!!");
-		lblNewLabel.setForeground(new Color(160, 82, 45));
-		lblNewLabel.setFont(new Font("±¼¸²", Font.BOLD | Font.ITALIC, 48));
-		lblNewLabel.setBounds(820, 23, 312, 48);
-		mainPanel.add(lblNewLabel);
-		
-		
-		
-		
-		
 		
 		ImagePanel S_boardpanel = new ImagePanel(new ImageIcon("G:/Product/HRM-project/HRM/image/S_board.png").getImage());
 		S_boardpanel.setBounds(30,81, 252, 692);
 		mainPanel.add(S_boardpanel);
+		
 		
 		
 		JTextArea textArea = new JTextArea();
@@ -104,6 +95,9 @@ public class NoticeBoard {
 		textArea.setToolTipText("\uAE00\uC744 \uC791\uC131\uD558\uC2E0\uD6C4 \uC800\uC7A5\uD558\uAE30 \uBC84\uD2BC\uC744 \uB20C\uB7EC\uC8FC\uC138\uC694");
 		textArea.setBounds(12, 148, 217, 370);
 		S_boardpanel.add(textArea);
+		
+		
+		
 		
 		
 		tablePanel = new JPanel();
@@ -128,13 +122,30 @@ public class NoticeBoard {
 		tablePanel.add(new JScrollPane(table));
 		Search = new JTextField();
 		
+		
 		JButton btn_saveButton_2 = new JButton("\uC800\uC7A5\uD558\uAE30");
 		frame.getContentPane().add(tablePanel);
-		
-		
-		
-		
+		S_boardpanel.add(Search);  
 		S_boardpanel.add(tablePanel);
+		
+		
+		Search = new JTextField();
+		Search.setFont(new Font("±¼¸²", Font.PLAIN, 14));
+		Search.setBounds(12, 85, 217, 53);
+		
+		Search.setVisible(false);
+		Search.setColumns(10);	
+		
+	
+		Search.addKeyListener(new KeyAdapter() {
+			public void keyReleased(KeyEvent e) {
+				String val=Search.getText();
+				TableRowSorter<TableModel>trs=new TableRowSorter<>(table.getModel());
+				table.setRowSorter(trs);
+				trs.setRowFilter(RowFilter.regexFilter(val));
+			}
+		});
+		
 		
 		
 		
@@ -161,6 +172,7 @@ public class NoticeBoard {
 				
 				tablePanel.setVisible(true);
 				Search.setVisible(true);
+				btn_ListButton_1.setVisible(false);
 				
 				
 				
@@ -192,21 +204,6 @@ public class NoticeBoard {
 		S_boardpanel.add(btn_beforeButton);
 		
 		
-		Search = new JTextField();
-		Search.setFont(new Font("±¼¸²", Font.PLAIN, 14));
-		Search.setBounds(12, 85, 217, 53);
-		S_boardpanel.add(Search);
-		Search.setColumns(10);	
-		
-	
-		Search.addKeyListener(new KeyAdapter() {
-			public void keyReleased(KeyEvent e) {
-				String val=Search.getText();
-				TableRowSorter<TableModel>trs=new TableRowSorter<>(table.getModel());
-				table.setRowSorter(trs);
-				trs.setRowFilter(RowFilter.regexFilter(val));
-			}
-		});
 		
 		ImagePanel M_boardpanel = new ImagePanel(new ImageIcon("G:/Product/HRM-project/HRM/image/M_board.png").getImage());
 		M_boardpanel.setBounds(280, 81, 847, 692);
@@ -254,6 +251,12 @@ public class NoticeBoard {
 		btn_N_Button_5.setPressedIcon(new ImageIcon("G:/Product/HRM-project/HRM/image/on_post_it01.png"));
 		btn_N_Button_5.setBounds(555, 413, 209, 206);
 		M_boardpanel.add(btn_N_Button_5);
+		
+		lblNewLabel = new JLabel("\uAC8C\uC2DC\uD310\uC5D0 \uC811\uC18D\uD558\uC168\uC2B5\uB2C8\uB2E4.");
+		lblNewLabel.setBounds(664, 24, 148, 34);
+		M_boardpanel.add(lblNewLabel);
+		lblNewLabel.setForeground(new Color(160, 82, 45));
+		lblNewLabel.setFont(new Font("±¼¸²", Font.PLAIN, 12));
 		ImagePanel welcomePanel=new ImagePanel(new ImageIcon("G:/Product/HRM-project/HRM/image/badpark_m.jpg").getImage());
 		welcomePanel.setBounds(0, 0, 1134, 852);
 		frame.getContentPane().add(welcomePanel);
