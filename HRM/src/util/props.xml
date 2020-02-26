@@ -3,5 +3,5 @@
 <properties>
 	<entry key="userName">HRM</entry>
 	<entry key="userPw">1234</entry>
-	<entry key="serverIp">192.168.0.17</entry>
+	<entry key="serverIp">192.168.109.1</entry>
 </properties>

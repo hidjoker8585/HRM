@@ -13,7 +13,7 @@ import java.util.Properties;
 /**
  * @brief JDBC을 위한 클래스 파일입니다
  * @author 이현우
- * @version ver 1.00 (2020.02.11)
+ * @version ver 1.01 (2020.02.11)
  * @see 정보는 프로퍼티 값을 이용, 싱글톤 사용, 객체호출은 getConnetion() 입니다
  * 
  */
@@ -35,10 +35,14 @@ public class DBconn {
 		if(conn == null) {
 			try {
 				Class.forName(DRIVER);
-				props.loadFromXML(new FileInputStream(new File("./src/util","props.xml")));
+				//String path = System.getProperty("user.home")+"//"+"Desktop";
+				props.loadFromXML(new FileInputStream(new File("./src/resource","props.xml")));
 				url = "jdbc:oracle:thin:@"+props.getProperty("serverIp")+":1521:XE";
 				userName = props.getProperty("userName");
-				password = props.getProperty("uesrPw");
+				password = props.getProperty("userPw");
+				System.out.println(url);
+				System.out.println(userName);
+				System.out.println(password);
 				conn = DriverManager.getConnection(url,userName,password);
 				
 			} catch (ClassNotFoundException e) {

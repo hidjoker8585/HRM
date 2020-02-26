@@ -20,6 +20,8 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.EtchedBorder;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -29,6 +31,7 @@ import javax.swing.table.TableColumnModel;
 import dao.DaoImpl;
 import dto.Dept;
 import dto.Emp;
+import main.MainFrame;
 import util.TableEditor;
 import util.TableModel;
 import util.TableRenderer;
@@ -41,7 +44,7 @@ import util.TableRenderer;
  * @see DB연결 남음..
  * 
  */
-public class DeptLookupPanel extends JPanel implements ListSelectionListener{
+public class DeptLookupPanel extends JPanel implements ListSelectionListener, AncestorListener{
 
 	//설정 상수 값
 	private static final int TABLE_HEADER_HEIGHT = 40;
@@ -129,6 +132,7 @@ public class DeptLookupPanel extends JPanel implements ListSelectionListener{
 		// TODO Auto-generated constructor stub
 		
 		frame = f;
+		dao = MainFrame.getDao();		
 		
 		//패널 초기 설정
 		initPanel();
@@ -145,10 +149,6 @@ public class DeptLookupPanel extends JPanel implements ListSelectionListener{
 		//부서 설명
 		makeDeptIntroduction();
 	
-		//db값 가져오기
-		getData();
-		
-		
 		add(pane_main);
 
 	}
@@ -159,6 +159,7 @@ public class DeptLookupPanel extends JPanel implements ListSelectionListener{
 
 		pane_main = new JPanel();
 		pane_main.setLayout(null);
+		addAncestorListener(this);
 		
 	}
 	
@@ -178,7 +179,6 @@ public class DeptLookupPanel extends JPanel implements ListSelectionListener{
 		table_deptList.setRowSelectionAllowed(true);
 		table_deptList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table_deptList.setBackground(TABLE_CELL_BACKGROUND);
-		table_deptList.getSelectionModel().addListSelectionListener(this);
 		
 		// 셀 에디터,렌더러 설정
 		defaultRenderer = new DefaultTableCellRenderer();
@@ -220,7 +220,7 @@ public class DeptLookupPanel extends JPanel implements ListSelectionListener{
 		colNames.addElement("상세보기");
 		
 		// 테이블 모델 설정
-		tbModel_leader = new TableModel(colNames,0,3);
+		tbModel_leader = new TableModel(colNames,0,3,"Dept_emp");
 		
 		// 테이블 설정
 		table_leader = new JTable(tbModel_leader);
@@ -274,7 +274,7 @@ public class DeptLookupPanel extends JPanel implements ListSelectionListener{
 		
 		// 테이블 모델 설정
 		//tbModel_empList = new TableModel(colNames,0,2,3);
-		tbModel_empList = new TableModel(colNames,0,3);
+		tbModel_empList = new TableModel(colNames,0,3,"Dept_emp");
 
 		// 테이블 설정
 		table_empList = new JTable(tbModel_empList);
@@ -292,9 +292,6 @@ public class DeptLookupPanel extends JPanel implements ListSelectionListener{
 		colModel_emp = table_empList.getColumnModel();
 		colModel_emp.getColumn(0).setCellRenderer(defaultRenderer);
 		colModel_emp.getColumn(1).setCellRenderer(defaultRenderer);
-		//String[] arr = {"A","B","C","D","E"};
-		//colModel_emp.getColumn(2).setCellEditor(new TableEditor(arr));
-		//colModel_emp.getColumn(2).setCellRenderer(new TableRenderer(arr));
 		colModel_emp.getColumn(2).setCellRenderer(defaultRenderer);
 		colModel_emp.getColumn(3).setCellEditor(new TableEditor("button",frame));
 		colModel_emp.getColumn(3).setCellRenderer(new TableRenderer("button"));
@@ -349,78 +346,79 @@ public class DeptLookupPanel extends JPanel implements ListSelectionListener{
 	}
 	
 	public void getData() {
-		//dao = new DaoImpl();
-		//sourceMap = dao.getAllByDept();
+		
+		sourceMap = dao.getAllByDept();
+		
 		// 테스트데이터 넣기
 		
-		// 테스트 데이터
-		sourceMap = new TreeMap<>();
-		Dept dept = new Dept();
-		ArrayList empList = new ArrayList<>();
-	    //부서소개 텍스트(테스트 값)
-	    String intro = "\n    인사팀은 직원을 선발하고 배치하며 \n"
-	    		+ "    직원 역량을 개발하고 평가하는 등  \n"
-	    		+ "    인적자원 관리를 주 업무로 하고 있습 \n"
-	    		+ "    니다\n\n"
-	    		+ "    위치 : 본사 3F \n"
-	    		+ "    연락망 : xx-xxxx-xxxx";
-		dept.setName("인사팀");
-		dept.setLeaderNo(10004);
-		dept.setIntro(intro);
-		Emp emp = new Emp();
-		emp.setDept("인사팀");		
-		emp.setPosition("사원");
-		emp.setName("홍길동");
-		emp.setEmpNo(10002);
-		empList.add(emp);
-		emp = new Emp();
-		emp.setDept("인사팀");		
-		emp.setPosition("팀장");
-		emp.setName("김영희");
-		emp.setEmpNo(10004);
-		empList.add(emp);
-		emp = new Emp();
-		emp.setDept("인사팀");		
-		emp.setPosition("사원");
-		emp.setName("김동수");
-		emp.setEmpNo(10003);
-		empList.add(emp);
-		emp = new Emp();
-		emp.setDept("인사팀");		
-		emp.setPosition("사원");
-		emp.setName("대나무");
-		emp.setEmpNo(10005);
-		empList.add(emp);
-		sourceMap.put(dept, empList);
-		
-	    intro = "\n    개발1팀은 솔루션 개발과 유지보수 \n"
-	    		+ "    업무를 담당하고 있습니다   \n"
-	    		+ "    \n"
-	    		+ "    위치 : 본사 4F \n"
-	    		+ "    연락망 : xx-xxxx-xxxx";
-		empList = new ArrayList<>();
-	    dept = new Dept();
-		emp = new Emp();
-		dept.setName("개발1팀");
-		dept.setLeaderNo(10007);
-		dept.setIntro(intro);
-		emp.setDept("개발1팀");		
-		emp.setPosition("사원");
-		emp.setName("줄리앙");
-		emp.setEmpNo(10011);
-		empList.add(emp);
-		emp = new Emp();
-		emp.setDept("개발1팀");		
-		emp.setPosition("팀장");
-		emp.setName("박혁");
-		emp.setEmpNo(10007);
-		empList.add(emp);
-		sourceMap.put(dept, empList);	
-	    dept = new Dept();
-		//emp = new Emp();
-		dept.setName("홍보팀");
-		dept.setLeaderNo(10007);
-		sourceMap.put(dept, null);
+//		// 테스트 데이터
+//		sourceMap = new TreeMap<>();
+//		Dept dept = new Dept();
+//		ArrayList empList = new ArrayList<>();
+//	    //부서소개 텍스트(테스트 값)
+//	    String intro = "\n    인사팀은 직원을 선발하고 배치하며 \n"
+//	    		+ "    직원 역량을 개발하고 평가하는 등  \n"
+//	    		+ "    인적자원 관리를 주 업무로 하고 있습 \n"
+//	    		+ "    니다\n\n"
+//	    		+ "    위치 : 본사 3F \n"
+//	    		+ "    연락망 : xx-xxxx-xxxx";
+//		dept.setName("인사팀");
+//		dept.setLeaderNo(10004);
+//		dept.setIntro(intro);
+//		Emp emp = new Emp();
+//		emp.setDept("인사팀");		
+//		emp.setPosition("사원");
+//		emp.setName("홍길동");
+//		emp.setEmpNo(10002);
+//		empList.add(emp);
+//		emp = new Emp();
+//		emp.setDept("인사팀");		
+//		emp.setPosition("팀장");
+//		emp.setName("김영희");
+//		emp.setEmpNo(10004);
+//		empList.add(emp);
+//		emp = new Emp();
+//		emp.setDept("인사팀");		
+//		emp.setPosition("사원");
+//		emp.setName("김동수");
+//		emp.setEmpNo(10003);
+//		empList.add(emp);
+//		emp = new Emp();
+//		emp.setDept("인사팀");		
+//		emp.setPosition("사원");
+//		emp.setName("대나무");
+//		emp.setEmpNo(10005);
+//		empList.add(emp);
+//		sourceMap.put(dept, empList);
+//		
+//	    intro = "\n    개발1팀은 솔루션 개발과 유지보수 \n"
+//	    		+ "    업무를 담당하고 있습니다   \n"
+//	    		+ "    \n"
+//	    		+ "    위치 : 본사 4F \n"
+//	    		+ "    연락망 : xx-xxxx-xxxx";
+//		empList = new ArrayList<>();
+//	    dept = new Dept();
+//		emp = new Emp();
+//		dept.setName("개발1팀");
+//		dept.setLeaderNo(10007);
+//		dept.setIntro(intro);
+//		emp.setDept("개발1팀");		
+//		emp.setPosition("사원");
+//		emp.setName("줄리앙");
+//		emp.setEmpNo(10011);
+//		empList.add(emp);
+//		emp = new Emp();
+//		emp.setDept("개발1팀");		
+//		emp.setPosition("팀장");
+//		emp.setName("박혁");
+//		emp.setEmpNo(10007);
+//		empList.add(emp);
+//		sourceMap.put(dept, empList);	
+//	    dept = new Dept();
+//		//emp = new Emp();
+//		dept.setName("홍보팀");
+//		dept.setLeaderNo(10007);
+//		sourceMap.put(dept, null);
 
 		// 데이터 분배하기
 		deptList = new ArrayList<>();
@@ -462,7 +460,7 @@ public class DeptLookupPanel extends JPanel implements ListSelectionListener{
 		if (empList != null) {
 			for (Emp emp : empList) {
 				Vector<Object> row = new Vector<>();
-				row.addElement(emp.getPosition());
+				row.addElement(emp.getRank());
 				row.addElement(emp.getName());
 				row.addElement(emp.getEmpNo());
 				row.addElement(emp.getEmpNo());
@@ -474,7 +472,39 @@ public class DeptLookupPanel extends JPanel implements ListSelectionListener{
 			}
 		}
 	}
-	
+
+	@Override
+	public void ancestorAdded(AncestorEvent event) {
+		// TODO Auto-generated method stub
+		getData();
+		//테이블 컬렉션 설정
+		table_deptList.getSelectionModel().addListSelectionListener(this);
+	}
+
+	@Override
+	public void ancestorMoved(AncestorEvent event) {}
+
+	@Override
+	public void ancestorRemoved(AncestorEvent event) {
+		// TODO Auto-generated method stub
+		// 테이블 초기화
+		table_deptList.getSelectionModel().removeListSelectionListener(this);		
+		for (int i = tbModel_deptList.getRowCount() - 1; i > -1; i--) {
+			tbModel_deptList.removeRow(i);
+		}
+		for (int i = tbModel_leader.getRowCount() - 1; i > -1; i--) {
+			tbModel_leader.removeRow(i);
+		}
+		for (int i = tbModel_empList.getRowCount() - 1; i > -1; i--) {
+			tbModel_empList.removeRow(i);
+		}
+		//컬렉션 초기화
+		sourceMap.clear();
+		deptList.clear();
+		empMap.clear();
+
+	}
+
 }
 
 

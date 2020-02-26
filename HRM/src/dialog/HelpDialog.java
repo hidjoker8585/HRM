@@ -19,6 +19,8 @@ public class HelpDialog extends JDialog{
 		setSize(new Dimension(880,660)); //다이얼로그 크기
 		setLocationRelativeTo(null); //가운데 위치
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE); //닫기
+		setResizable(false); //크기 조정
+
 
 	}
 }

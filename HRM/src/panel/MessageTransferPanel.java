@@ -22,6 +22,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
 
+import dao.DaoImpl;
 import dto.Dept;
 import dto.Emp;
 import util.TableEditor;
@@ -30,7 +31,7 @@ import util.TableRenderer;
 
 /**
  * @brief  Messagesending
- * @author ksk
+ * @author 정 : 김순기, 부 : 이현우
  * @version V1.00 2020.02.12
  * @see none
  */
@@ -69,6 +70,7 @@ public class MessageTransferPanel extends JPanel{
 	private DefaultTableCellRenderer defaultRenderer;
 
 	//DB
+	private DaoImpl dao;
 	private ArrayList<Emp> empList;
 
 	
@@ -167,49 +169,49 @@ public class MessageTransferPanel extends JPanel{
 	}
 	
 	public void getData() {
-		//dao = new DaoImpl();
-		//sourceMap = dao.getAllByDept();
+		dao = new DaoImpl();
+		empList = dao.getEmpList();
 		// 테스트데이터 넣기
 		
 		// 테스트 데이터
 	    //부서소개 텍스트(테스트 값)
-		empList = new ArrayList<>();
-		Emp emp = new Emp();
-		emp.setDept("인사팀");		
-		emp.setPosition("사원");
-		emp.setName("홍길동");
-		emp.setEmpNo(10002);
-		empList.add(emp);
-		emp = new Emp();
-		emp.setDept("인사팀");		
-		emp.setPosition("팀장");
-		emp.setName("김영희");
-		emp.setEmpNo(10004);
-		empList.add(emp);
-		emp = new Emp();
-		emp.setDept("인사팀");		
-		emp.setPosition("사원");
-		emp.setName("김동수");
-		emp.setEmpNo(10003);
-		empList.add(emp);
-		emp = new Emp();
-		emp.setDept("인사팀");		
-		emp.setPosition("사원");
-		emp.setName("대나무");
-		emp.setEmpNo(10005);
-		empList.add(emp);
-		emp = new Emp();
-		emp.setDept("개발1팀");		
-		emp.setPosition("사원");
-		emp.setName("줄리앙");
-		emp.setEmpNo(10011);
-		empList.add(emp);
-		emp = new Emp();
-		emp.setDept("개발1팀");		
-		emp.setPosition("팀장");
-		emp.setName("박혁");
-		emp.setEmpNo(10007);
-		empList.add(emp);
+//		empList = new ArrayList<>();
+//		Emp emp = new Emp();
+//		emp.setDept("인사팀");		
+//		emp.setPosition("사원");
+//		emp.setName("홍길동");
+//		emp.setEmpNo(10002);
+//		empList.add(emp);
+//		emp = new Emp();
+//		emp.setDept("인사팀");		
+//		emp.setPosition("팀장");
+//		emp.setName("김영희");
+//		emp.setEmpNo(10004);
+//		empList.add(emp);
+//		emp = new Emp();
+//		emp.setDept("인사팀");		
+//		emp.setPosition("사원");
+//		emp.setName("김동수");
+//		emp.setEmpNo(10003);
+//		empList.add(emp);
+//		emp = new Emp();
+//		emp.setDept("인사팀");		
+//		emp.setPosition("사원");
+//		emp.setName("대나무");
+//		emp.setEmpNo(10005);
+//		empList.add(emp);
+//		emp = new Emp();
+//		emp.setDept("개발1팀");		
+//		emp.setPosition("사원");
+//		emp.setName("줄리앙");
+//		emp.setEmpNo(10011);
+//		empList.add(emp);
+//		emp = new Emp();
+//		emp.setDept("개발1팀");		
+//		emp.setPosition("팀장");
+//		emp.setName("박혁");
+//		emp.setEmpNo(10007);
+//		empList.add(emp);
 
 		// 데이터 분배하기
 		for (Emp e : empList) {

@@ -2,16 +2,22 @@ package dto;
 /**
  * @brief 부서정보를 담을 dto
  * @author 이현우
- * @version v1.01 2020.02.18
+ * @version v1.01 2020.02.21
  * @see 정렬을 위한 compareTo 정의
  */
 public class Dept implements Comparable<Dept>{
 
-	private int deptNo = 0;
+	private int deptNo;
 	private String name;
 	private String intro;
 	private int leaderNo;
 
+	public int getDeptNo() {
+		return deptNo;
+	}
+	public void setDeptNo(int deptNo) {
+		this.deptNo = deptNo;
+	}
 	public String getName() {
 		return name;
 	}
