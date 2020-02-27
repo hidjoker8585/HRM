@@ -85,6 +85,7 @@ public class LoginDialog extends JDialog implements ActionListener,WindowListene
 		
 		btn_findPw = new JButton("PWÃ£±â");
 		btn_findPw.setBounds(100,260,100,40);
+		btn_findPw.addActionListener(this);
 				
 		addWindowListener(this);
 		
