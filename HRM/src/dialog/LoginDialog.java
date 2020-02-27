@@ -128,7 +128,7 @@ public class LoginDialog extends JDialog implements ActionListener,WindowListene
 			procLogin();
 		}
 		if(e.getSource()==btn_findPw) {
-			
+			JOptionPane.showMessageDialog(this, "°ø»çÁß..");
 		}
 	}
 	

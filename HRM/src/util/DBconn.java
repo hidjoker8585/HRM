@@ -36,7 +36,7 @@ public class DBconn {
 			try {
 				Class.forName(DRIVER);
 				//String path = System.getProperty("user.home")+"//"+"Desktop";
-				props.loadFromXML(new FileInputStream(new File("./src/resource","props.xml")));
+				props.loadFromXML(new FileInputStream(new File("./src/util","props.xml")));
 				url = "jdbc:oracle:thin:@"+props.getProperty("serverIp")+":1521:XE";
 				userName = props.getProperty("userName");
 				password = props.getProperty("userPw");

@@ -380,10 +380,16 @@ public class MainFrame extends JFrame implements ActionListener{
 //			validate();
 //			repaint();
 		}else if(e.getSource()==miHelp) {
-			helpDialog.setVisible(true);
+//			helpDialog.setVisible(true);
+			JOptionPane.showMessageDialog(this, "공사중..");
 		}else if(e.getSource()==miAbout) {
-			aboutDialog.setVisible(true);
+//			aboutDialog.setVisible(true);
+			JOptionPane.showMessageDialog(this, "공사중..");
 		}else if(e.getSource()==miCredit) {
+			root.removeAll();
+			root.add(logPane);
+			validate();
+			repaint();
 			creditDialog.setVisible(true);
 		}
 		
